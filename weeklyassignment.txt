@@ -1,0 +1,3 @@
+I just leart to use git this semester because two courses are using this useful tool.
+And now this course is using Git, too.
+Hope I can enjoy Git :)
