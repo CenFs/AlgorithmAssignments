@@ -84,9 +84,11 @@ StopwatchMode stopwatch_mode = StopwatchMode::OFF;
 class Stopwatch
 {
 public:
+    using Clock = std::chrono::high_resolution_clock;
+
     Stopwatch() : running(false) { }
-    void start() { running = true; starttime = std::chrono::system_clock::now(); }
-    void stop() { endtime = std::chrono::system_clock::now(); running = false; }
+    void start() { running = true; starttime = Clock::now(); }
+    void stop() { endtime = Clock::now(); running = false; }
     double elapsed()
     {
         if (!running)
@@ -96,13 +98,13 @@ public:
         }
         else
         {
-            std::chrono::duration<double> elapsed = std::chrono::system_clock::now() - starttime;
+            std::chrono::duration<double> elapsed = Clock::now() - starttime;
             return elapsed.count();
         }
     }
 private:
-    std::chrono::time_point<std::chrono::high_resolution_clock> starttime;
-    std::chrono::time_point<std::chrono::high_resolution_clock> endtime;
+    std::chrono::time_point<Clock> starttime;
+    std::chrono::time_point<Clock> endtime;
     bool running;
 };
 
@@ -201,7 +203,9 @@ void cmd_read(Datastructure& ds, ostream& output, MatchIter begin, MatchIter end
     ifstream input(filename);
     if (input)
     {
+        output << "** Commands from '" << filename << "'" << endl;
         command_parser(ds, input, output, PromptStyle::NORMAL);
+        output << "** End of commands from '" << filename << "'" << endl;
     }
     else
     {
@@ -519,6 +523,7 @@ vector<CmdInfo> cmds =
     {"help", "", &help_command},
     {"perftest", "([0-9]+)[[:space:]]+([0-9]+)[[:space:]]+([0-9]+(?:;[0-9]+)*)", &cmd_perftest},
     {"stopwatch", "(?:(on)|(off)|(next))", &cmd_stopwatch},
+    {"#", ".*", [](Datastructure&, ostream&, MatchIter, MatchIter){} },
 };
 
 void help_command(Datastructure& /*ds*/, ostream& output, MatchIter /*begin*/, MatchIter /*end*/)
@@ -532,8 +537,8 @@ void help_command(Datastructure& /*ds*/, ostream& output, MatchIter /*begin*/, M
 
 void command_parser(Datastructure& ds, istream& input, ostream& output, PromptStyle promptstyle)
 {
-    static unsigned int nesting_level = 0; // UGLY! Remember nesting level to print correct amount of >:s.
-    if (promptstyle != PromptStyle::NO_NESTING) { ++nesting_level; }
+//    static unsigned int nesting_level = 0; // UGLY! Remember nesting level to print correct amount of >:s.
+//    if (promptstyle != PromptStyle::NO_NESTING) { ++nesting_level; }
 
     // Create regex <whitespace>(cmd1|cmd2|...)<whitespace>(.*)
     string cmds_regex_str = "[[:space:]]*(";
@@ -549,7 +554,8 @@ void command_parser(Datastructure& ds, istream& input, ostream& output, PromptSt
     string line;
     do
     {
-        output << string(nesting_level, '>') << " ";
+//        output << string(nesting_level, '>') << " ";
+        output << '>' << " ";
         getline(input, line, '\n');
 
         if (promptstyle != PromptStyle::NO_ECHO)
@@ -614,7 +620,7 @@ void command_parser(Datastructure& ds, istream& input, ostream& output, PromptSt
     }
     while (input);
 
-    if (promptstyle != PromptStyle::NO_NESTING) { --nesting_level; }
+//    if (promptstyle != PromptStyle::NO_NESTING) { --nesting_level; }
 }
 } // namespace
 

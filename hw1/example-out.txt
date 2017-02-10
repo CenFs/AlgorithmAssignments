@@ -1,15 +1,18 @@
 > clear
+Cleared all persons
 > size
 Number of employees: 0
 > read 'example-data.txt'
->> add 'Meikkis Matti' 2000
->> add 'Teikkis Terttu' 4000
->> add 'Miljoona Miikka' 1000000
->> add 'Sorrettu Sami' 1
->> add 'Keskiverto Keijo' 3000
->> add 'Kukalie Kirsi' 2500
->> add 'Olematon Oskari' 6000
->> 
+** Commands from 'example-data.txt'
+> add 'Meikkis Matti' 2000
+> add 'Teikkis Terttu' 4000
+> add 'Miljoona Miikka' 1000000
+> add 'Sorrettu Sami' 1
+> add 'Keskiverto Keijo' 3000
+> add 'Kukalie Kirsi' 2500
+> add 'Olematon Oskari' 6000
+> 
+** End of commands from 'example-data.txt'
 > size
 Number of employees: 7
 > min
