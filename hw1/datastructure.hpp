@@ -38,6 +38,9 @@ public:
 
 private:
     // Add your implementation here
+    vector<Person*> plist_;
+    // bool sorted_a_;
+    bool sorted_s_;
 };
 
 #endif // DATASTRUCTURE_HPP
