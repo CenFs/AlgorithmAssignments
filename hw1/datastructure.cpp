@@ -18,6 +18,11 @@ Type random_in_range(Type start, Type end) {
     return static_cast<Type>(start+num);
 }
 
+void merge_sort(vector<Person*>& plist, int head, int tail, string sort_by);
+void merge(vector<Person*>& plist, int head, int mid, int tail, string sort_by);
+void quick_sort(vector<Person*>& plist, int left, int right, string sort_by);
+
+
 
 Datastructure::Datastructure() {
     plist_ = {};
@@ -48,16 +53,16 @@ void Datastructure::clear() {
 
 vector<Person *> Datastructure::personnel_alphabetically() {
     vector<Person *> plist = plist_;
-    // quick_sort(plist, 0, plist.size()-1, "name");
-    merge_sort(plist, 0, plist.size()-1, "name");
+    // quick_sort(plist, 0, int(plist.size())-1, "name");
+    merge_sort(plist, 0, int(plist.size())-1, "name");
     // sorted_a_ = true;
     return plist;
 }
 
 vector<Person *> Datastructure::personnel_salary_order() {
     // vector<Person *> plist = plist_;
-    // quick_sort(plist_, 0, plist_.size()-1, "salary");
-    merge_sort(plist_, 0, plist_.size()-1, "salary");
+    // quick_sort(plist_, 0, int(plist_.size())-1, "salary");
+    merge_sort(plist_, 0, int(plist_.size())-1, "salary");
     sorted_s_ = true;
     return plist_;
 }
@@ -132,6 +137,16 @@ void quick_sort(vector<Person*>& plist, int left, int right, string sort_by) {
 
 
 // merge sort
+void merge_sort(vector<Person*>& plist, int head, int tail, string sort_by) {
+    if (head < tail) {
+        int mid = (head + tail) / 2;
+        merge_sort(plist, head, mid, sort_by);
+        merge_sort(plist, mid + 1, tail, sort_by);
+        merge(plist, head, mid, tail, sort_by);
+    }
+    return;
+}
+
 void merge(vector<Person*>& plist, int head, int mid, int tail, string sort_by) {
     vector<Person*>& plist_copy(plist);
     int i = head;
@@ -166,12 +181,3 @@ void merge(vector<Person*>& plist, int head, int mid, int tail, string sort_by) 
         plist.at(j) = plist_copy.at(j + k);
 }
 
-void merge_sort(vector<Person*>& plist, int head, int tail, string sort_by) {
-    if (head < tail) {
-        int mid = (head + tail) / 2;
-        merge_sort(plist, head, mid, sort_by);
-        merge_sort(plist, mid + 1, tail, sort_by);
-        merge(plist, head, mid, tail, sort_by);
-    }
-    return;
-}
