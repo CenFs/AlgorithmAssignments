@@ -39,8 +39,15 @@ public:
 private:
     // Add your implementation here
     vector<Person*> plist_;
-    // bool sorted_a_;
+    vector<Person*> plist_name_;
+    Person *max_salary_;
+    Person *min_salary_;
+    // Person *median_salary_;
+    // Person *first_quartile_salary_;
+    // Person *third_quartile_salary_;
+    bool sorted_a_;
     bool sorted_s_;
+    // bool firstadd_;
 };
 
 #endif // DATASTRUCTURE_HPP

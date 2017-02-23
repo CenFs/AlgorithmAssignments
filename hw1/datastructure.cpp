@@ -18,16 +18,21 @@ Type random_in_range(Type start, Type end) {
     return static_cast<Type>(start+num);
 }
 
-void merge_sort(vector<Person*>& plist, int head, int tail, string sort_by);
-void merge(vector<Person*>& plist, int head, int mid, int tail, string sort_by);
-void quick_sort(vector<Person*>& plist, int left, int right, string sort_by);
-
+void merge_sort(vector<Person*>& plist, int head, int tail, bool sort_by_name);
+void merge(vector<Person*>& plist, int head, int mid, int tail, bool sort_by_name);
+void quick_sort(vector<Person*>& plist, int left, int right, bool sort_by_name);
 
 
 Datastructure::Datastructure() {
     plist_ = {};
-    // sorted_a_ = false;
+    plist_name_ = {};
+    sorted_a_ = false;
     sorted_s_ = false;
+    max_salary_ = new Person();
+    min_salary_ = new Person();
+    // median_salary_ = new Person();
+    // first_quartile_salary_ = new Person();
+    // third_quartile_salary_ = new Person();
 }
 
 Datastructure::~Datastructure() {
@@ -39,8 +44,17 @@ void Datastructure::add_person(std::string name, int salary) {
     p -> name = name;
     p -> salary = salary;
     plist_.push_back(p);
-    // sorted_a_ = false;
     sorted_s_ = false;
+    // plist_name_.push_back(p);
+    sorted_a_ = false;
+    if (plist_.size() == 1) {
+        min_salary_ = p;
+        max_salary_ = p;
+    } else {
+        if ((min_salary_ -> salary) > (p -> salary))    min_salary_ = p;
+        if ((max_salary_ -> salary) < (p -> salary))    max_salary_ = p;
+    }
+    // cerr << "add person: " << p -> name << endl;
 }
 
 unsigned int Datastructure::size() {
@@ -49,62 +63,83 @@ unsigned int Datastructure::size() {
 
 void Datastructure::clear() {
     plist_.clear();
+    plist_name_.clear();
 }
 
 vector<Person *> Datastructure::personnel_alphabetically() {
-    vector<Person *> plist = plist_;
-    // quick_sort(plist, 0, int(plist.size())-1, "name");
-    merge_sort(plist, 0, int(plist.size())-1, "name");
-    // sorted_a_ = true;
-    return plist;
+    // cerr << "personnel_alphabetically()" << endl;
+    if (!sorted_a_) {
+        plist_name_ = plist_;
+        quick_sort(plist_name_, 0, int(plist_name_.size())-1, true);
+        // merge_sort(plist_, 0, int(plist_.size())-1, "name");
+        sorted_a_ = true;
+    }
+    return plist_name_;
 }
 
 vector<Person *> Datastructure::personnel_salary_order() {
-    // vector<Person *> plist = plist_;
-    // quick_sort(plist_, 0, int(plist_.size())-1, "salary");
-    merge_sort(plist_, 0, int(plist_.size())-1, "salary");
+    // cerr << "personnel_salary_order()" << endl;
+    quick_sort(plist_, 0, int(plist_.size())-1, false);
+    // merge_sort(plist_, 0, int(plist_.size())-1, "salary");
     sorted_s_ = true;
+    // max_salary_ = plist_.at(plist_.size()-1);
+    // min_salary_ = plist_.at(0);
+    // median_salary_ = plist_.at((plist_.size()) / 2);
+    // first_quartile_salary_ = plist_.at((plist_.size()) / 4);
+    // third_quartile_salary_ = plist_.at((plist_.size()) * 3 / 4);
     return plist_;
 }
 
 Person* Datastructure::min_salary() {
-    if (!sorted_s_) plist_ = personnel_salary_order();
-    return plist_.at(0);
+    // cerr << "min_salary()" << endl;
+    // if (!sorted_s_) plist_ = personnel_salary_order();
+    // else cerr << "sorted_s_ True" << endl;
+    return min_salary_; // plist_.at(0);
 }
 
 Person* Datastructure::max_salary() {
-    if (!sorted_s_) plist_ = personnel_salary_order();
-    return plist_.at(plist_.size()-1);
+    // cerr << "max_salary()" << endl;
+    // if (!sorted_s_) plist_ = personnel_salary_order();
+    // else cerr << "sorted_s_ True" << endl;
+    return max_salary_; // plist_.at(plist_.size() - 1);
 }
 
 Person* Datastructure::median_salary() {
+    // cerr << "median_salary()" << endl;
     if (!sorted_s_) plist_ = personnel_salary_order();
-    return plist_.at((plist_.size()-1) / 2);
+    // else cerr << "sorted_s_ True" << endl;
+    return plist_.at(plist_.size() / 2); // median_salary_;
 }
 
 Person* Datastructure::first_quartile_salary() {
+    // cerr << "first_quartile_salary()" << endl;
     if (!sorted_s_) plist_ = personnel_salary_order();
-    return plist_.at((plist_.size()-1) / 4);
+    // else cerr << "sorted_s_ True" << endl;
+    return plist_.at(plist_.size() / 4); // first_quartile_salary_;
 }
 
 Person* Datastructure::third_quartile_salary() {
+    // cerr << "third_quartile_salary()" << endl;
     if (!sorted_s_) plist_ = personnel_salary_order();
-    return plist_.at((plist_.size()-1) * 3 / 4);
+    // else cerr << "sorted_s_ True" << endl;
+    return plist_.at(plist_.size() * 3 / 4); // third_quartile_salary_;
 }
 
 
 
 // quick sort
-void quick_sort(vector<Person*>& plist, int left, int right, string sort_by) {
-    Person *ptmp = new Person();
+void quick_sort(vector<Person*>& plist, int left, int right, bool sort_by_name) {
+    Person *ptmp = plist.at((left + right) / 2);
     int i = left, j = right;
 
+    // cerr << "quick sort!" << endl;
     // partition
-    if (sort_by.compare("name")) {
-        string pivot = plist.at((left + right) / 2) -> name;
+    if (sort_by_name/*sort_by.compare("name") == 0*/) {
+        // cerr << "quick sort name" << endl;
+        string pivot = ptmp -> name;
         while (i <= j) {
-            while (plist.at(i) -> name < pivot) i++;
-            while (plist.at(j) -> name > pivot) j--;
+            while ((plist.at(i) -> name) < pivot) i++;
+            while ((plist.at(j) -> name) > pivot) j--;
             if (i <= j) {
                 ptmp = plist.at(i);
                 plist.at(i) = plist.at(j);
@@ -113,12 +148,12 @@ void quick_sort(vector<Person*>& plist, int left, int right, string sort_by) {
                 j--;
             }
         }
-    }
-    else if (sort_by.compare("salary")) {
-        int pivot = plist.at((left + right) / 2) -> salary;
+    } else /*if (sort_by.compare("salary") == 0)*/ {
+        // cerr << "quick sort salary" << endl;
+        int pivot = ptmp -> salary;
         while (i <= j) {
-            while (plist.at(i) -> salary < pivot) i++;
-            while (plist.at(j) -> salary > pivot) j--;
+            while ((plist.at(i) -> salary) < pivot) i++;
+            while ((plist.at(j) -> salary) > pivot) j--;
             if (i <= j) {
                 ptmp = plist.at(i);
                 plist.at(i) = plist.at(j);
@@ -127,52 +162,54 @@ void quick_sort(vector<Person*>& plist, int left, int right, string sort_by) {
                 j--;
             }
         }
-    }
+    } // else cerr << "quick sort NOT name NOT salary!!" << endl;
 
     // recursion
-    if (left < j) quick_sort(plist, left, j, sort_by);
-    if (i < right) quick_sort(plist, i, right, sort_by);
+    if (left < j) quick_sort(plist, left, j, sort_by_name);
+    if (i < right) quick_sort(plist, i, right, sort_by_name);
 }
 
 
 
 // merge sort
-void merge_sort(vector<Person*>& plist, int head, int tail, string sort_by) {
+void merge_sort(vector<Person*>& plist, int head, int tail, bool sort_by_name) {
     if (head < tail) {
         int mid = (head + tail) / 2;
-        merge_sort(plist, head, mid, sort_by);
-        merge_sort(plist, mid + 1, tail, sort_by);
-        merge(plist, head, mid, tail, sort_by);
+        merge_sort(plist, head, mid, sort_by_name);
+        merge_sort(plist, mid + 1, tail, sort_by_name);
+        merge(plist, head, mid, tail, sort_by_name);
     }
     return;
 }
 
-void merge(vector<Person*>& plist, int head, int mid, int tail, string sort_by) {
-    vector<Person*>& plist_copy(plist);
+void merge(vector<Person*>& plist, int head, int mid, int tail, bool sort_by_name) {
+    vector<Person*>plist_copy = plist;
     int i = head;
     int j = head;
     int k = mid + 1;
-    if (sort_by.compare("name")) {
+    if (sort_by_name/*sort_by.compare("name") == 0*/) {
         while (j <= mid && k <= tail) {
-            if (plist_copy.at(j) -> name <= plist_copy.at(k) -> name) {
+            if ((plist_copy.at(j)) -> name <= (plist_copy.at(k)) -> name) {
                 plist.at(i) = plist_copy.at(j);
                 j++;
             } else {
                 plist.at(i) = plist_copy.at(k);
                 k++;
             }
+            i++;
         }
-    } else if (sort_by.compare("salary")) {
+    } else /*if (sort_by.compare("salary") == 0)*/ {
         while (j <= mid && k <= tail) {
-            if (plist_copy.at(j) -> salary <= plist_copy.at(k) -> salary) {
+            if ((plist_copy.at(j)) -> salary <= (plist_copy.at(k)) -> salary) {
                 plist.at(i) = plist_copy.at(j);
                 j++;
             } else {
                 plist.at(i) = plist_copy.at(k);
                 k++;
             }
+            i++;
         }
-    }
+    } // else cerr << "merge sort NOT name NOT salary!!" << endl;
     if (j > mid)
         k = 0;
     else
@@ -180,4 +217,5 @@ void merge(vector<Person*>& plist, int head, int mid, int tail, string sort_by) 
     for (j = i; j <= tail; j++)
         plist.at(j) = plist_copy.at(j + k);
 }
+
 
