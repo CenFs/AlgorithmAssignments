@@ -18,8 +18,8 @@ Type random_in_range(Type start, Type end) {
     return static_cast<Type>(start+num);
 }
 
-void merge_sort(vector<Person*>& plist, int head, int tail, bool sort_by_name);
-void merge(vector<Person*>& plist, int head, int mid, int tail, bool sort_by_name);
+// void merge_sort(vector<Person*>& plist, int head, int tail, bool sort_by_name);
+// void merge(vector<Person*>& plist, int head, int mid, int tail, bool sort_by_name);
 void quick_sort(vector<Person*>& plist, int left, int right, bool sort_by_name);
 
 
@@ -64,6 +64,10 @@ unsigned int Datastructure::size() {
 void Datastructure::clear() {
     plist_.clear();
     plist_name_.clear();
+    max_salary_ = new Person();
+    min_salary_ = new Person();
+    sorted_a_ = false;
+    sorted_s_ = false;
 }
 
 vector<Person *> Datastructure::personnel_alphabetically() {
@@ -170,7 +174,7 @@ void quick_sort(vector<Person*>& plist, int left, int right, bool sort_by_name) 
 }
 
 
-
+/*
 // merge sort
 void merge_sort(vector<Person*>& plist, int head, int tail, bool sort_by_name) {
     if (head < tail) {
@@ -187,7 +191,7 @@ void merge(vector<Person*>& plist, int head, int mid, int tail, bool sort_by_nam
     int i = head;
     int j = head;
     int k = mid + 1;
-    if (sort_by_name/*sort_by.compare("name") == 0*/) {
+    if (sort_by_name) { // sort_by.compare("name") == 0
         while (j <= mid && k <= tail) {
             if ((plist_copy.at(j)) -> name <= (plist_copy.at(k)) -> name) {
                 plist.at(i) = plist_copy.at(j);
@@ -198,7 +202,7 @@ void merge(vector<Person*>& plist, int head, int mid, int tail, bool sort_by_nam
             }
             i++;
         }
-    } else /*if (sort_by.compare("salary") == 0)*/ {
+    } else { // if (sort_by.compare("salary") == 0)
         while (j <= mid && k <= tail) {
             if ((plist_copy.at(j)) -> salary <= (plist_copy.at(k)) -> salary) {
                 plist.at(i) = plist_copy.at(j);
@@ -217,5 +221,5 @@ void merge(vector<Person*>& plist, int head, int mid, int tail, bool sort_by_nam
     for (j = i; j <= tail; j++)
         plist.at(j) = plist_copy.at(j + k);
 }
-
+*/
 
