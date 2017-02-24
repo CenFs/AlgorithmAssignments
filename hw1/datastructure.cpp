@@ -79,14 +79,16 @@ vector<Person *> Datastructure::personnel_alphabetically() {
 
 vector<Person *> Datastructure::personnel_salary_order() {
     // cerr << "personnel_salary_order()" << endl;
-    quick_sort_salary(plist_, 0, int(plist_.size())-1);
-    // merge_sort(plist_, 0, int(plist_.size())-1, "salary");
-    sorted_s_ = true;
-    // max_salary_ = plist_.at(plist_.size()-1);
-    // min_salary_ = plist_.at(0);
-    // median_salary_ = plist_.at((plist_.size()) / 2);
-    // first_quartile_salary_ = plist_.at((plist_.size()) / 4);
-    // third_quartile_salary_ = plist_.at((plist_.size()) * 3 / 4);
+    if (!sorted_s_) {
+        quick_sort_salary(plist_, 0, int(plist_.size())-1);
+        // merge_sort(plist_, 0, int(plist_.size())-1, "salary");
+        sorted_s_ = true;
+        // max_salary_ = plist_.at(plist_.size()-1);
+        // min_salary_ = plist_.at(0);
+        // median_salary_ = plist_.at((plist_.size()) / 2);
+        // first_quartile_salary_ = plist_.at((plist_.size()) / 4);
+        // third_quartile_salary_ = plist_.at((plist_.size()) * 3 / 4);
+    }
     return plist_;
 }
 
@@ -106,21 +108,33 @@ Person* Datastructure::max_salary() {
 
 Person* Datastructure::median_salary() {
     // cerr << "median_salary()" << endl;
-    if (!sorted_s_) plist_ = personnel_salary_order();
+    if (!sorted_s_) {
+        quick_sort_salary(plist_, 0, int(plist_.size())-1);
+        // merge_sort(plist_, 0, int(plist_.size())-1, "salary");
+        sorted_s_ = true;
+    }
     // else cerr << "sorted_s_ True" << endl;
     return plist_.at(plist_.size() / 2); // median_salary_;
 }
 
 Person* Datastructure::first_quartile_salary() {
     // cerr << "first_quartile_salary()" << endl;
-    if (!sorted_s_) plist_ = personnel_salary_order();
+    if (!sorted_s_) {
+        quick_sort_salary(plist_, 0, int(plist_.size())-1);
+        // merge_sort(plist_, 0, int(plist_.size())-1, "salary");
+        sorted_s_ = true;
+    }
     // else cerr << "sorted_s_ True" << endl;
     return plist_.at(plist_.size() / 4); // first_quartile_salary_;
 }
 
 Person* Datastructure::third_quartile_salary() {
     // cerr << "third_quartile_salary()" << endl;
-    if (!sorted_s_) plist_ = personnel_salary_order();
+    if (!sorted_s_) {
+        quick_sort_salary(plist_, 0, int(plist_.size())-1);
+        // merge_sort(plist_, 0, int(plist_.size())-1, "salary");
+        sorted_s_ = true;
+    }
     // else cerr << "sorted_s_ True" << endl;
     return plist_.at(plist_.size() * 3 / 4); // third_quartile_salary_;
 }
