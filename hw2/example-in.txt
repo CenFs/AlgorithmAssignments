@@ -1,0 +1,22 @@
+clear
+size
+read 'example-data.txt'
+size
+min
+max
+median
+alphalist
+salarylist
+1stquartile
+3rdquartile
+remove kk2
+size
+find 'Keskiverto Keijo'
+titlelist 'basic worker'
+change_name kk1 'Kaikenlainen Kaija'
+change_salary tt 1500
+ceo
+underlings richbastard
+nearest_common_boss doesall nobody
+higher_lower_ranks mm
+quit
