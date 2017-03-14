@@ -57,9 +57,9 @@ using std::find_if;
 using std::find;
 using std::max_element;
 
-#include <cstdlib>
-using std::srand;
-using std::rand;
+#include <random>
+using std::minstd_rand;
+using std::uniform_int_distribution;
 
 #include <chrono>
 
@@ -82,12 +82,16 @@ using std::time;
 
 namespace
 {
+minstd_rand rand_engine;
+
 template <typename Type>
 Type random(Type start, Type end)
 {
     auto range = end-start;
+    assert(range != 0 && "random() with zero range!");
 
-    auto num = rand() % range;
+    auto num = uniform_int_distribution<unsigned long int>(0, range-1)(rand_engine);
+
     return static_cast<Type>(start+num);
 }
 
@@ -246,6 +250,13 @@ void command_parser(Datastructure& ds, istream& input, ostream& output, PromptSt
 
 void help_command(Datastructure& ds, ostream& /*output*/, MatchIter /*begin*/, MatchIter /*end*/);
 
+void test_get_functions(Datastructure& ds, PersonID id)
+{
+    ds.get_name(id);
+    ds.get_salary(id);
+    ds.get_title(id);
+}
+
 void cmd_add(Datastructure& ds, ostream& /*output*/, MatchIter begin, MatchIter end)
 {
     string name = *begin++;
@@ -303,6 +314,8 @@ void test_higher_lower_ranks(Datastructure& ds)
         // Choose random *even* number to operate
         auto id = n_to_id(random<decltype(people_added)>(0, (people_added+1)/2)*2);
 
+        test_get_functions(ds, id);
+
         ds.higher_lower_ranks(id);
     }
 }
@@ -326,7 +339,7 @@ void cmd_randseed(Datastructure& /*ds*/, ostream& output, MatchIter begin, Match
 
     unsigned long int seed = convert_string_to<unsigned long int>(seedstr);
 
-    srand(seed);
+    rand_engine.seed(seed);
     init_primes();
 
     output << "Random seed set to " << seed << endl;
@@ -547,6 +560,8 @@ void test_change_name(Datastructure& ds)
         }
 
         ds.change_name(id, name);
+
+        test_get_functions(ds, id);
     }
 }
 
@@ -573,6 +588,8 @@ void test_change_salary(Datastructure& ds)
         Salary salary = random<Salary>(1, 10000);
 
         ds.change_salary(id, salary);
+
+        test_get_functions(ds, id);
     }
 }
 
@@ -625,7 +642,12 @@ void test_find(Datastructure& ds)
         name += random('a', 'k'); // 10 letters
     }
 
-    ds.find_persons(name);
+    auto result = ds.find_persons(name);
+
+    for (auto& i : result)
+    {
+        test_get_functions(ds, i);
+    }
 }
 
 void cmd_nearest_common_boss(Datastructure& ds, ostream& output, MatchIter begin, MatchIter end)
@@ -647,6 +669,8 @@ void test_nearest_common_boss(Datastructure& ds)
         auto id2 = n_to_id(random<decltype(people_added)>(0, (people_added+1)/2)*2);
 
         ds.nearest_common_boss(id1, id2);
+
+        test_get_functions(ds, id1);
     }
 }
 
@@ -976,7 +1000,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    srand(time(nullptr));
+    rand_engine.seed(time(nullptr));
 //    startmem = get<0>(mempeak());
 
     init_primes();

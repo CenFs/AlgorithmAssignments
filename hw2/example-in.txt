@@ -5,18 +5,19 @@ size
 min
 max
 median
-alphalist
+find 'Keskiverto Keijo'
 salarylist
 1stquartile
 3rdquartile
-remove kk2
-size
-find 'Keskiverto Keijo'
-titlelist 'basic worker'
 change_name kk1 'Kaikenlainen Kaija'
+alphalist
 change_salary tt 1500
 ceo
 underlings richbastard
+# AFTER THIS NON-COMPULSORY PARTS ARE TESTED
 nearest_common_boss doesall nobody
 higher_lower_ranks mm
+remove kk2
+size
+titlelist 'basic worker'
 quit

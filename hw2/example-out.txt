@@ -29,14 +29,8 @@ id doesall : general utility Sorrettu Sami, salary 1
 id richbastard : commander Miljoona Miikka, salary 1000000
 > median
 id kk1 : basic worker Keskiverto Keijo, salary 3000
-> alphalist
+> find 'Keskiverto Keijo'
 id kk1 : basic worker Keskiverto Keijo, salary 3000
-id kk2 : basic worker Kukalie Kirsi, salary 2500
-id mm : basic worker Meikkis Matti, salary 2000
-id richbastard : commander Miljoona Miikka, salary 1000000
-id nobody : useless Olematon Oskari, salary 6000
-id doesall : general utility Sorrettu Sami, salary 1
-id tt : technical evangelist Teikkis Terttu, salary 4000
 > salarylist
 id doesall : general utility Sorrettu Sami, salary 1
 id mm : basic worker Meikkis Matti, salary 2000
@@ -49,16 +43,16 @@ id richbastard : commander Miljoona Miikka, salary 1000000
 id mm : basic worker Meikkis Matti, salary 2000
 > 3rdquartile
 id nobody : useless Olematon Oskari, salary 6000
-> remove kk2
-> size
-Number of employees: 6
-> find 'Keskiverto Keijo'
-id kk1 : basic worker Keskiverto Keijo, salary 3000
-> titlelist 'basic worker'
-id kk1 : basic worker Keskiverto Keijo, salary 3000
-id mm : basic worker Meikkis Matti, salary 2000
 > change_name kk1 'Kaikenlainen Kaija'
 id kk1 : basic worker Kaikenlainen Kaija, salary 3000
+> alphalist
+id kk1 : basic worker Kaikenlainen Kaija, salary 3000
+id kk2 : basic worker Kukalie Kirsi, salary 2500
+id mm : basic worker Meikkis Matti, salary 2000
+id richbastard : commander Miljoona Miikka, salary 1000000
+id nobody : useless Olematon Oskari, salary 6000
+id doesall : general utility Sorrettu Sami, salary 1
+id tt : technical evangelist Teikkis Terttu, salary 4000
 > change_salary tt 1500
 id tt : technical evangelist Teikkis Terttu, salary 1500
 > ceo
@@ -70,9 +64,17 @@ id richbastard : commander Miljoona Miikka, salary 1000000
   id nobody : useless Olematon Oskari, salary 6000
  id tt : technical evangelist Teikkis Terttu, salary 1500
   id kk1 : basic worker Kaikenlainen Kaija, salary 3000
+  id kk2 : basic worker Kukalie Kirsi, salary 2500
+> # AFTER THIS NON-COMPULSORY PARTS ARE TESTED
 > nearest_common_boss doesall nobody
 id mm : basic worker Meikkis Matti, salary 2000
 > higher_lower_ranks mm
-Persons with higher rank : 3
-Persons with lower rank : 1
+Persons with higher rank (closer to ceo): 1
+Persons with lower rank (further away from ceo): 4
+> remove kk2
+> size
+Number of employees: 6
+> titlelist 'basic worker'
+id kk1 : basic worker Kaikenlainen Kaija, salary 3000
+id mm : basic worker Meikkis Matti, salary 2000
 > quit
