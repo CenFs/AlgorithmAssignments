@@ -38,7 +38,7 @@ Number of employees: 3
 > add_boss hw 1
 > add_boss ow 1
 > min
-id ow : worker Other Worker, salary 500
+id hw : worker No Body, salary 200
 > max
 id 1 : ceo Cecil Edward Ogg, salary 1000000
 > median
