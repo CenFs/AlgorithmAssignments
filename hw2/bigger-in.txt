@@ -3,7 +3,6 @@ read 'bigger-data.txt'
 size
 min
 salarylist
-alphalist
 1stquartile
 3rdquartile
 ceo
@@ -11,7 +10,6 @@ underlings BillWalsh
 find 'Bill'
 change_name BillCallahan 'Willy'
 find 'Bill'
-alphalist
 max
 median
 change_salary JimSchwartz 10

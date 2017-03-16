@@ -121,45 +121,6 @@ id MikeShanahan : good Mike, salary 70008
 id PaulHackett : bad Paul, salary 77312
 id MikeNolan : good Mike, salary 81903
 id JimSchwartz : ugly Jim, salary 85855
-> alphalist
-id AndyReid : bad Andy, salary 67585
-id BillWalsh : good Bill, salary 64411
-id BillCallahan : bad Bill, salary 11011
-id BradChildress : bad Brad, salary 21930
-id BrianBillick : good Brian, salary 34028
-id BruceCoslet : ugly Bruce, salary 53049
-id DennisGreen : bad Dennis, salary 53497
-id GaryKubiak : bad Gary, salary 64373
-id GeorgeSeifert : ugly George, salary 25123
-id JackDelRio : bad Jack, salary 29281
-id JettFisher : bad Jett, salary 45815
-id JimFassel : ugly Jim, salary 18344
-id JimZorn : good Jim, salary 55230
-id JimMora : bad Jim, salary 19477
-id JimSchwartz : ugly Jim, salary 85855
-id JimHarbaugh : ugly Jim, salary 37186
-id JohnFox : ugly John, salary 21720
-id JohnHarbaugh : ugly John, salary 18488
-id JonGruden : good Jon, salary 1336
-id MartyMornhinweg : good Marty, salary 29066
-id MikeHolmgren : good Mike, salary 57460
-id MikeSherman : bad Mike, salary 34104
-id MikeMcCarthy : bad Mike, salary 19307
-id MikeShanahan : good Mike, salary 70008
-id MikeTice : good Mike, salary 57608
-id MikeNolan : good Mike, salary 81903
-id MikeSmith : bad Mike, salary 45495
-id MikeSingletary : ugly Mike, salary 27654
-id NorvTurner : good Norv, salary 69946
-id PaulHackett : bad Paul, salary 77312
-id PeteCarroll : bad Pete, salary 4120
-id RaheemMorris : bad Raheem, salary 18395
-id RayRhodes : good Ray, salary 33400
-id RexRyan : ugly Rex, salary 65599
-id SamWyche : ugly Sam, salary 13968
-id ScottLinehan : ugly Scott, salary 15015
-id SteveMariucci : good Steve, salary 3584
-id TomCable : ugly Tom, salary 35522
 > 1stquartile
 id MikeMcCarthy : bad Mike, salary 19307
 > 3rdquartile
@@ -212,45 +173,6 @@ id BillWalsh : good Bill, salary 64411
 id BillCallahan : bad Willy, salary 11011
 > find 'Bill'
 id BillWalsh : good Bill, salary 64411
-> alphalist
-id AndyReid : bad Andy, salary 67585
-id BillWalsh : good Bill, salary 64411
-id BradChildress : bad Brad, salary 21930
-id BrianBillick : good Brian, salary 34028
-id BruceCoslet : ugly Bruce, salary 53049
-id DennisGreen : bad Dennis, salary 53497
-id GaryKubiak : bad Gary, salary 64373
-id GeorgeSeifert : ugly George, salary 25123
-id JackDelRio : bad Jack, salary 29281
-id JettFisher : bad Jett, salary 45815
-id JimFassel : ugly Jim, salary 18344
-id JimZorn : good Jim, salary 55230
-id JimMora : bad Jim, salary 19477
-id JimSchwartz : ugly Jim, salary 85855
-id JimHarbaugh : ugly Jim, salary 37186
-id JohnFox : ugly John, salary 21720
-id JohnHarbaugh : ugly John, salary 18488
-id JonGruden : good Jon, salary 1336
-id MartyMornhinweg : good Marty, salary 29066
-id MikeHolmgren : good Mike, salary 57460
-id MikeSherman : bad Mike, salary 34104
-id MikeMcCarthy : bad Mike, salary 19307
-id MikeShanahan : good Mike, salary 70008
-id MikeTice : good Mike, salary 57608
-id MikeNolan : good Mike, salary 81903
-id MikeSmith : bad Mike, salary 45495
-id MikeSingletary : ugly Mike, salary 27654
-id NorvTurner : good Norv, salary 69946
-id PaulHackett : bad Paul, salary 77312
-id PeteCarroll : bad Pete, salary 4120
-id RaheemMorris : bad Raheem, salary 18395
-id RayRhodes : good Ray, salary 33400
-id RexRyan : ugly Rex, salary 65599
-id SamWyche : ugly Sam, salary 13968
-id ScottLinehan : ugly Scott, salary 15015
-id SteveMariucci : good Steve, salary 3584
-id TomCable : ugly Tom, salary 35522
-id BillCallahan : bad Willy, salary 11011
 > max
 id JimSchwartz : ugly Jim, salary 85855
 > median
