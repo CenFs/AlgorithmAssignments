@@ -810,8 +810,10 @@ void cmd_perftest(Datastructure& ds, ostream& output, MatchIter begin, MatchIter
             if (i.testfunc)
             {
                 if (commandstr == "all" || find(optional_cmds.begin(), optional_cmds.end(), i.cmd) == optional_cmds.end())
-                output << i.cmd << " ";
-                testfuncs.push_back(i.testfunc);
+                {
+                    output << i.cmd << " ";
+                    testfuncs.push_back(i.testfunc);
+                }
             }
         }
     }
