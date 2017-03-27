@@ -1,0 +1,7 @@
+Quicksort that uses middle index as pivot is acceptable and has good efficiency.
+
+You're not doing any unnecessary sorting. However median and quartiles don't require the whole array to be sorted. (nth_element)
+
+Your program leaks memory (memory reserved with new is never freed with delete)
+
+You could make only one quicksort function that takes the comparing function as a parameter.
