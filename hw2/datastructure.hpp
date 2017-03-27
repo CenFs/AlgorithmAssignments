@@ -4,13 +4,12 @@
 #define DATASTRUCTURE_HPP
 
 #include <string>
-using std::string;
-
 #include <vector>
-using std::vector;
-
 #include <utility>
-using std::pair;
+#include <algorithm>
+#include <map>
+#include <unordered_map>
+using namespace std;
 
 using PersonID = string;
 PersonID const NO_ID = "";
@@ -57,9 +56,41 @@ public:
     PersonID first_quartile_salary();
     PersonID third_quartile_salary();
 
+    // void quick_sort(vector<Person*>& plist, int left, int right, bool sort_by_name);
+
 private:
     // Add your implementation here
+    struct Person {
+        string name;
+        PersonID id;
+        string title;
+        Salary salary;
+        vector<Person*> children;
+        Person* parent = NULL;
+    };
 
+    Person* pmax_salary_;
+    Person* pmin_salary_;
+    Person* p_;
+
+    vector<Person*> vperson_;
+    vector<Person*> vperson_name_;
+    vector<PersonID> vpersonid_name_;
+    vector<PersonID> vpersonid_salary_;
+
+    bool sorted_name_;
+    bool sorted_salary_;
+    bool max_salary_removed_;
+    bool min_salary_removed_;
+
+    unordered_map<PersonID, Person*> m_;
+
+    /*
+    struct Node {
+        Person p;
+        vector<Node*> children; // if you wanna search "do i have this child", map/unordered_map is better.
+        Node* parent;
+    };*/
 };
 
 #endif // DATASTRUCTURE_HPP
