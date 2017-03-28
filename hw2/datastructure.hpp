@@ -7,7 +7,6 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
-#include <map>
 #include <unordered_map>
 using namespace std;
 
@@ -17,6 +16,14 @@ PersonID const NO_ID = "";
 using Salary = int;
 Salary const NO_SALARY = -1;
 
+struct Person {
+    string name;
+    PersonID id;
+    string title;
+    Salary salary;
+    vector<Person*> children;
+    Person* parent = NULL;
+};
 
 class Datastructure
 {
@@ -56,19 +63,11 @@ public:
     PersonID first_quartile_salary();
     PersonID third_quartile_salary();
 
-    // void quick_sort(vector<Person*>& plist, int left, int right, bool sort_by_name);
+    int count_all_children(Person* p);
+    int nodes_of_higher_ranks(Person* top, int rank, int height);
+    int nodes_of_lower_ranks(Person* top, int rank, int height);
 
 private:
-    // Add your implementation here
-    struct Person {
-        string name;
-        PersonID id;
-        string title;
-        Salary salary;
-        vector<Person*> children;
-        Person* parent = NULL;
-    };
-
     Person* pmax_salary_;
     Person* pmin_salary_;
     Person* p_;

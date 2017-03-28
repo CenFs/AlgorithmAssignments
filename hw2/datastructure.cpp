@@ -4,6 +4,7 @@
 
 // For debug
 #include <iostream>
+#include <stack>
 using namespace std;
 
 template <typename Type>
@@ -48,7 +49,7 @@ void Datastructure::add_person(string name, PersonID id, string title, Salary sa
     vperson_name_.push_back(p_);
     sorted_name_ = false;
     m_[id] = p_;
-/*
+
     if (vperson_.size() == 1) {
         pmin_salary_ = p_;
         pmax_salary_ = p_;
@@ -58,11 +59,24 @@ void Datastructure::add_person(string name, PersonID id, string title, Salary sa
     }
     max_salary_removed_ = false;
     min_salary_removed_ = false;
-*/
+
 }
 
 
 void Datastructure::remove_person(PersonID id) {
+    /*vector<Person*> parent_children = m_[id]->parent->children;
+    auto tmp = parent_children.begin();
+    if (tmp != parent_children.end()) {
+        tmp = parent_children.erase(find_if(parent_children.begin(), parent_children.end(), [id](const Person* p){return p->id == id;}));
+        tmp++;
+    }
+    auto iter = m_[id]->children.begin();
+    while (iter != m_[id]->children.end()) {
+        (*iter)->parent = m_[id]->parent;
+        parent_children.push_back((*iter));
+        iter++;
+    }*/
+
     m_.erase(id);
     vperson_.erase(remove_if(vperson_.begin(), vperson_.end(), [id](const Person* p){return p->id == id;}));
     if (sorted_salary_) {
@@ -172,8 +186,9 @@ void Datastructure::clear() {
 
 vector<PersonID> Datastructure::underlings(PersonID id) {
     vector<PersonID> underlings;
-    auto person = find_if(vperson_.begin(), vperson_.end(), [id](const Person* p){return p->id == id;});
-    vector<Person*> children = (*person)->children;
+    vector<Person*> children = m_[id]->children;
+    //auto person = find_if(vperson_.begin(), vperson_.end(), [id](const Person* p){return p->id == id;});
+    //vector<Person*> children = (*person)->children;
 
     for (auto iter = children.begin(); iter != children.end(); iter++) {
         underlings.push_back((*iter)->id);
@@ -227,12 +242,117 @@ PersonID Datastructure::find_ceo() {
 
 
 PersonID Datastructure::nearest_common_boss(PersonID id1, PersonID id2) {
-    return NO_ID; // If you do not implement this, leave this return value as it is.
+    PersonID ceo = find_ceo();
+    Person* person1 = m_[id1];
+    Person* person2 = m_[id2];
+    if (person1->id == ceo || person2->id == ceo) {
+        return ceo;
+    }
+    if (person1->id == person2->parent->id) {
+        return person1->parent->id;
+    } else if (person2->id == person1->parent->id) {
+        return person2->parent->id;
+    } else if (person1->parent->id == person2->parent->id) {
+        return person1->parent->id;
+    }
+
+    stack<Person*> p1_parents;
+    stack<Person*> p2_parents;
+    while (person1->parent != NULL) {
+        p1_parents.push(person1->parent);
+        person1 = m_[person1->parent->id];
+    }
+    while (person2->parent != NULL) {
+        p2_parents.push(person2->parent);
+        person2 = m_[person2->parent->id];
+    }
+    Person* result = NULL;
+    while (p1_parents.size() > 0 && p2_parents.size() > 0 && p1_parents.top() == p2_parents.top()) {
+        result = p1_parents.top();
+        p1_parents.pop();
+        p2_parents.pop();
+    }
+    if (result != NULL) {
+        return result->id;
+    }
+    return NO_ID;
 }
 
+int Datastructure::count_all_children(Person* p) {
+    int count = 0;
+    if (p->children.size() == 0) {
+        return count;
+    }
+    count += p->children.size();
+    auto iter = p->children.begin();
+    while (iter != p->children.end()) {
+        if ((*iter)->children.size() != 0)
+            count += count_all_children((*iter));
+        iter++;
+    }
+    return count;
+}
+
+int Datastructure::nodes_of_higher_ranks(Person* top, int rank, int height) {
+    if (rank == 0) {
+        return 0;
+    } else if (rank == 1) {
+        return 1;
+    } else if (rank == 2) {
+        return top->children.size() + 1;
+    }
+
+    int count = top->children.size();
+    if (height == rank) {
+        count++; // ceo
+    }
+    if (rank > 2 && height > rank - 1) {
+        height--;
+        auto iter = top->children.begin();
+        while (iter != top->children.end()) {
+            count += nodes_of_higher_ranks((*iter), rank, height);
+            iter++;
+        }
+    }
+    return count;
+}
+
+int Datastructure::nodes_of_lower_ranks(Person* top, int rank, int height) {
+    if (rank == 0) {
+        return count_all_children(top);
+    }
+
+    int count = 0;
+    if (rank > 0 && height > 0) {
+        height--;
+        auto iter = top->children.begin();
+        while (iter != top->children.end()) {
+            if (height == 0) {
+                count += count_all_children((*iter));
+            } else {
+                count += nodes_of_lower_ranks((*iter), rank, height);
+            }
+            iter++;
+        }
+    }
+    return count;
+}
 
 pair<unsigned int, unsigned int> Datastructure::higher_lower_ranks(PersonID id) {
-    return {0, 0}; // If you do not implement this, leave this return value as it is.
+    PersonID ceoid = find_ceo();
+    if (ceoid == NO_ID) {
+        return {0, 0};
+    }
+
+    Person* ceo = m_[ceoid];
+    Person* p = m_[id];
+
+    int rank = 0;
+    while (p->parent != NULL) {
+        rank++;
+        p = m_[p->parent->id];
+    }
+    return {nodes_of_higher_ranks(ceo, rank, rank), nodes_of_lower_ranks(ceo, rank, rank)};
 }
 
 
