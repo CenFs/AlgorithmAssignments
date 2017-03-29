@@ -64,18 +64,24 @@ void Datastructure::add_person(string name, PersonID id, string title, Salary sa
 
 
 void Datastructure::remove_person(PersonID id) {
-    /*vector<Person*> parent_children = m_[id]->parent->children;
-    auto tmp = parent_children.begin();
-    if (tmp != parent_children.end()) {
-        tmp = parent_children.erase(find_if(parent_children.begin(), parent_children.end(), [id](const Person* p){return p->id == id;}));
-        tmp++;
+    if (id == find_ceo()) {
+        auto iter = m_[id]->children.begin();
+        while (iter != m_[id]->children.end()) {
+            (*iter)->parent = NULL;
+            iter++;
+        }
+    } else {
+        auto tmp = m_[id]->parent->children.begin();
+        if (tmp != m_[id]->parent->children.end()) {
+            tmp = m_[id]->parent->children.erase(remove_if(m_[id]->parent->children.begin(), m_[id]->parent->children.end(), [id](const Person* p){return p->id == id;}));
+        }
+        auto iter = m_[id]->children.begin();
+        while (iter != m_[id]->children.end()) {
+            (*iter)->parent = m_[id]->parent;
+            m_[id]->parent->children.push_back((*iter));
+            iter++;
+        }
     }
-    auto iter = m_[id]->children.begin();
-    while (iter != m_[id]->children.end()) {
-        (*iter)->parent = m_[id]->parent;
-        parent_children.push_back((*iter));
-        iter++;
-    }*/
 
     m_.erase(id);
     vperson_.erase(remove_if(vperson_.begin(), vperson_.end(), [id](const Person* p){return p->id == id;}));
@@ -246,7 +252,7 @@ PersonID Datastructure::nearest_common_boss(PersonID id1, PersonID id2) {
     Person* person1 = m_[id1];
     Person* person2 = m_[id2];
     if (person1->id == ceo || person2->id == ceo) {
-        return ceo;
+        return NO_ID;
     }
     if (person1->id == person2->parent->id) {
         return person1->parent->id;
@@ -306,7 +312,7 @@ int Datastructure::nodes_of_higher_ranks(Person* top, int rank, int height) {
     if (height == rank) {
         count++; // ceo
     }
-    if (rank > 2 && height > rank - 1) {
+    if (rank > 2 && height > 2) {
         height--;
         auto iter = top->children.begin();
         while (iter != top->children.end()) {
