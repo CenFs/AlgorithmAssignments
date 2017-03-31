@@ -64,46 +64,48 @@ void Datastructure::add_person(string name, PersonID id, string title, Salary sa
 
 
 void Datastructure::remove_person(PersonID id) {
-    if (id == find_ceo()) {
-        auto iter = m_[id]->children.begin();
-        while (iter != m_[id]->children.end()) {
-            (*iter)->parent = NULL;
-            iter++;
+    if (m_.find(id) != m_.end()) {
+        if (id == find_ceo()) {
+            auto iter = m_[id]->children.begin();
+            while (iter != m_[id]->children.end()) {
+                (*iter)->parent = NULL;
+                iter++;
+            }
+        } else {
+            auto tmp = m_[id]->parent->children.begin();
+            if (tmp != m_[id]->parent->children.end()) {
+                tmp = m_[id]->parent->children.erase(remove_if(m_[id]->parent->children.begin(), m_[id]->parent->children.end(), [id](const Person* p){return p->id == id;}));
+            }
+            auto iter = m_[id]->children.begin();
+            while (iter != m_[id]->children.end()) {
+                (*iter)->parent = m_[id]->parent;
+                m_[id]->parent->children.push_back((*iter));
+                iter++;
+            }
         }
-    } else {
-        auto tmp = m_[id]->parent->children.begin();
-        if (tmp != m_[id]->parent->children.end()) {
-            tmp = m_[id]->parent->children.erase(remove_if(m_[id]->parent->children.begin(), m_[id]->parent->children.end(), [id](const Person* p){return p->id == id;}));
-        }
-        auto iter = m_[id]->children.begin();
-        while (iter != m_[id]->children.end()) {
-            (*iter)->parent = m_[id]->parent;
-            m_[id]->parent->children.push_back((*iter));
-            iter++;
-        }
-    }
 
-    m_.erase(id);
-    vperson_.erase(remove_if(vperson_.begin(), vperson_.end(), [id](const Person* p){return p->id == id;}));
-    if (sorted_salary_) {
-        vpersonid_salary_.clear();
-        auto iter = vperson_.begin();
-        while (iter != vperson_.end()) {
-            vpersonid_salary_.push_back((*iter)->id);
-            iter++;
-        }
+        m_.erase(id);
+        vperson_.erase(remove_if(vperson_.begin(), vperson_.end(), [id](const Person* p){return p->id == id;}));
+        /*if (sorted_salary_) {
+            vpersonid_salary_.clear();
+            auto iter = vperson_.begin();
+            while (iter != vperson_.end()) {
+                vpersonid_salary_.push_back((*iter)->id);
+                iter++;
+            }
+        }*/
+        vperson_name_.erase(remove_if(vperson_name_.begin(), vperson_name_.end(), [id](const Person* p){return p->id == id;}));
+        /*if (sorted_name_) {
+            vpersonid_name_.clear();
+            auto iter = vperson_name_.begin();
+            while (iter != vperson_name_.end()) {
+                vpersonid_name_.push_back((*iter)->id);
+                iter++;
+            }
+        }*/
+        if (pmax_salary_->id == id) max_salary_removed_ = true;
+        if (pmin_salary_->id == id) min_salary_removed_ = true;
     }
-    vperson_name_.erase(remove_if(vperson_name_.begin(), vperson_name_.end(), [id](const Person* p){return p->id == id;}));
-    if (sorted_name_) {
-        vpersonid_name_.clear();
-        auto iter = vperson_name_.begin();
-        while (iter != vperson_name_.end()) {
-            vpersonid_name_.push_back((*iter)->id);
-            iter++;
-        }
-    }
-    if (pmax_salary_->id == id) max_salary_removed_ = true;
-    if (pmin_salary_->id == id) min_salary_removed_ = true;
 }
 
 
@@ -184,8 +186,8 @@ unsigned int Datastructure::size() {
 void Datastructure::clear() {
     vperson_.clear();
     vperson_name_.clear();
-    vpersonid_name_.clear();
-    vpersonid_salary_.clear();
+    // vpersonid_name_.clear();
+    // vpersonid_salary_.clear();
     m_.clear();
 }
 
@@ -208,15 +210,21 @@ vector<PersonID> Datastructure::personnel_alphabetically() {
     if (!sorted_name_) {
         sort(vperson_name_.begin(), vperson_name_.end(), [](const Person* a, const Person* b){return a->name < b->name;});
         sorted_name_ = true;
-
+/*
         vpersonid_name_.clear();
         auto iter = vperson_name_.begin();
         while (iter != vperson_name_.end()) {
             vpersonid_name_.push_back((*iter)->id);
             iter++;
-        }
+        }*/
     }
-    return vpersonid_name_;
+    vector<PersonID> vpersonid_name;
+    auto iter = vperson_name_.begin();
+    while (iter != vperson_name_.end()) {
+        vpersonid_name.push_back((*iter)->id);
+        iter++;
+    }
+    return vpersonid_name;
 }
 
 
@@ -224,15 +232,21 @@ vector<PersonID> Datastructure::personnel_salary_order() {
     if (!sorted_salary_) {
         sort(vperson_.begin(), vperson_.end(), [](const Person* a, const Person* b){return a->salary < b->salary;});
         sorted_salary_ = true;
-
+/*
         vpersonid_salary_.clear();
         auto iter = vperson_.begin();
         while (iter != vperson_.end()) {
             vpersonid_salary_.push_back((*iter)->id);
             iter++;
-        }
+        }*/
     }
-    return vpersonid_salary_;
+    vector<PersonID> vpersonid_salary;
+    auto iter = vperson_.begin();
+    while (iter != vperson_.end()) {
+        vpersonid_salary.push_back((*iter)->id);
+        iter++;
+    }
+    return vpersonid_salary;
 }
 
 
@@ -248,10 +262,11 @@ PersonID Datastructure::find_ceo() {
 
 
 PersonID Datastructure::nearest_common_boss(PersonID id1, PersonID id2) {
-    PersonID ceo = find_ceo();
     Person* person1 = m_[id1];
     Person* person2 = m_[id2];
-    if (person1->id == ceo || person2->id == ceo) {
+    PersonID ceo = find_ceo();
+
+    if (m_.find(id1) == m_.end() || m_.find(id2) == m_.end() || person1->parent == NULL || person2->parent == NULL) {
         return NO_ID;
     }
     if (person1->id == person2->parent->id) {
@@ -361,19 +376,11 @@ pair<unsigned int, unsigned int> Datastructure::higher_lower_ranks(PersonID id) 
     return {nodes_of_higher_ranks(ceo, rank, rank), nodes_of_lower_ranks(ceo, rank, rank)};
 }
 
-
 PersonID Datastructure::min_salary() {
     if (min_salary_removed_) {
         if (!sorted_salary_) {
             sort(vperson_.begin(), vperson_.end(), [](const Person* a, const Person* b){return a->salary < b->salary;});
             sorted_salary_ = true;
-
-            vpersonid_salary_.clear();
-            auto iter = vperson_.begin();
-            while (iter != vperson_.end()) {
-                vpersonid_salary_.push_back((*iter)->id);
-                iter++;
-            }
         }
         pmin_salary_ = vperson_.at(0);
         min_salary_removed_ = false;
@@ -381,19 +388,11 @@ PersonID Datastructure::min_salary() {
     return pmin_salary_->id;
 }
 
-
 PersonID Datastructure::max_salary() {
     if (max_salary_removed_) {
         if (!sorted_salary_) {
             sort(vperson_.begin(), vperson_.end(), [](const Person* a, const Person* b){return a->salary < b->salary;});
             sorted_salary_ = true;
-
-            vpersonid_salary_.clear();
-            auto iter = vperson_.begin();
-            while (iter != vperson_.end()) {
-                vpersonid_salary_.push_back((*iter)->id);
-                iter++;
-            }
         }
         pmax_salary_ = vperson_.at(vperson_.size()-1);
         max_salary_removed_ = false;
@@ -401,50 +400,26 @@ PersonID Datastructure::max_salary() {
     return pmax_salary_->id;
 }
 
-
 PersonID Datastructure::median_salary() {
     if (!sorted_salary_) {
         sort(vperson_.begin(), vperson_.end(), [](const Person* a, const Person* b){return a->salary < b->salary;});
         sorted_salary_ = true;
-
-        vpersonid_salary_.clear();
-        auto iter = vperson_.begin();
-        while (iter != vperson_.end()) {
-            vpersonid_salary_.push_back((*iter)->id);
-            iter++;
-        }
     }
     return vperson_.at(vperson_.size() / 2)->id;
 }
-
 
 PersonID Datastructure::first_quartile_salary() {
     if (!sorted_salary_) {
         sort(vperson_.begin(), vperson_.end(), [](const Person* a, const Person* b){return a->salary < b->salary;});
         sorted_salary_ = true;
-
-        vpersonid_salary_.clear();
-        auto iter = vperson_.begin();
-        while (iter != vperson_.end()) {
-            vpersonid_salary_.push_back((*iter)->id);
-            iter++;
-        }
     }
     return vperson_.at(vperson_.size() / 4)->id;
 }
-
 
 PersonID Datastructure::third_quartile_salary() {
     if (!sorted_salary_) {
         sort(vperson_.begin(), vperson_.end(), [](const Person* a, const Person* b){return a->salary < b->salary;});
         sorted_salary_ = true;
-
-        vpersonid_salary_.clear();
-        auto iter = vperson_.begin();
-        while (iter != vperson_.end()) {
-            vpersonid_salary_.push_back((*iter)->id);
-            iter++;
-        }
     }
     return vperson_.at(vperson_.size() * 3 / 4)->id;
 }
