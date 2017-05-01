@@ -68,10 +68,10 @@ id nobody : useless Olematon Oskari, salary 6000 (cost 1)
 Total cost is 12
 > cheapest_friendpath richbastard nobody
 Cheapest path of friends is:
-id tt : technical evangelist Teikkis Terttu, salary 4000 ( cost2)
-id kk2 : basic worker Kukalie Kirsi, salary 2500 ( cost2)
-id kk1 : basic worker Keskiverto Keijo, salary 3000 ( cost2)
-id nobody : useless Olematon Oskari, salary 6000 ( cost1)
+id tt : technical evangelist Teikkis Terttu, salary 4000 (cost 2)
+id kk2 : basic worker Kukalie Kirsi, salary 2500 (cost 2)
+id kk1 : basic worker Keskiverto Keijo, salary 3000 (cost 2)
+id nobody : useless Olematon Oskari, salary 6000 (cost 1)
 Total cost is 7
 > leave_cheapest_friendforest
 Remaining friend forest has 1 trees with the total cost of 11

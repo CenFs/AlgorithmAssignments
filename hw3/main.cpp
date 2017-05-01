@@ -103,6 +103,9 @@ unsigned long int prime1 = 0; // Will be initialized to random value from above 
 unsigned long int prime2 = 0; // Will be initialized to random value from above in main
 unsigned long int people_added = 0; // Counter for random people added (to keep ids unique)
 
+enum class TestStatus { NOT_RUN, NO_DIFFS, DIFFS_FOUND };
+TestStatus test_status = TestStatus::NOT_RUN;
+
 void init_primes()
 {
     // Initialize id generator
@@ -451,10 +454,15 @@ void cmd_testread(Datastructure& ds, ostream& output, MatchIter begin, MatchIter
             if (lines_ok)
             {
                 output << "**No differences in output.**" << endl;
+                if (test_status == TestStatus::NOT_RUN)
+                {
+                    test_status = TestStatus::NO_DIFFS;
+                }
             }
             else
             {
                 output << "**Differences found! (Lines beginning with '?')**" << endl;
+                test_status = TestStatus::DIFFS_FOUND;
             }
 
         }
@@ -862,7 +870,7 @@ void cmd_cheapest_friendpath(Datastructure& ds, ostream& output, MatchIter begin
         for (auto const& i : result)
         {
             print_person(ds, i.first, output);
-            output << " ( cost" << i.second << ")" << endl;
+            output << " (cost " << i.second << ")" << endl;
             total_cost += i.second;
         }
         output << "Total cost is " << total_cost << endl;
@@ -1239,23 +1247,31 @@ int main(int argc, char* argv[])
 
     init_primes();
 
-    Datastructure ds;
-
-    if (args.size() == 2)
     {
-        string filename = args[1];
-        ifstream input(filename);
-        if (input)
+        Datastructure ds;
+
+        if (args.size() == 2)
         {
-            command_parser(ds, input, cout, PromptStyle::NORMAL);
+            string filename = args[1];
+            ifstream input(filename);
+            if (input)
+            {
+                command_parser(ds, input, cout, PromptStyle::NORMAL);
+            }
+            else
+            {
+                cout << "Cannot open file '" << filename << "'!" << endl;
+            }
         }
         else
         {
-            cout << "Cannot open file '" << filename << "'!" << endl;
+            command_parser(ds, cin, cout, PromptStyle::NO_ECHO);
+        }
+        if (test_status != TestStatus::NOT_RUN)
+        {
+            cerr << "Tests have been run (testread), " << ((test_status == TestStatus::DIFFS_FOUND) ? "differences found!" : "no differences found.") << endl;
         }
     }
-    else
-    {
-        command_parser(ds, cin, cout, PromptStyle::NO_ECHO);
-    }
+
+    cerr << "Program ended normally." << endl;
 }
