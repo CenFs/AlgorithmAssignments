@@ -4,13 +4,11 @@
 #define DATASTRUCTURE_HPP
 
 #include <string>
-using std::string;
-
 #include <vector>
-using std::vector;
-
 #include <utility>
-using std::pair;
+#include <algorithm>
+#include <unordered_map>
+using namespace std;
 
 using PersonID = string;
 PersonID const NO_ID = "";
@@ -20,6 +18,45 @@ Salary const NO_SALARY = -1;
 
 using Cost = int;
 Cost const NO_COST = -1;
+
+struct Person {
+    string name;
+    PersonID id;
+    string title;
+    Salary salary;
+    vector<Person*> children;
+    Person* parent = NULL;
+};
+
+struct AdjListNode {
+    PersonID id;
+    Cost cost;
+    struct AdjListNode *next;
+    friend bool operator< (AdjListNode a, AdjListNode b) {
+        return a.cost > b.cost;
+    }
+};
+
+struct AdjList {
+    AdjListNode *head;
+};
+
+struct Graph {
+    int vertices;
+    int edges;
+    // AdjList *array;
+    unordered_map<PersonID, AdjList*> main_index;
+};
+
+struct DijkstraNode {
+    PersonID id;
+    Cost cost;
+    Cost eachcost;
+    friend bool operator< (DijkstraNode a, DijkstraNode b) {
+        return a.cost > b.cost;
+    }
+};
+
 
 class Datastructure
 {
@@ -59,6 +96,12 @@ public:
     PersonID first_quartile_salary();
     PersonID third_quartile_salary();
 
+    int count_all_children(Person* p);
+    int nodes_of_higher_ranks(Person* top, int rank, int height);
+    int nodes_of_lower_ranks(Person* top, int rank, int height);
+
+
+
     // After this are the new operations of hw3
     void add_friendship(PersonID id, PersonID friendid, Cost cost);
     void remove_friendship(PersonID id, PersonID friendid);
@@ -70,8 +113,26 @@ public:
     vector<pair<PersonID, Cost>> cheapest_friendpath(PersonID fromid, PersonID toid);
     pair<unsigned int, Cost> leave_cheapest_friendforest();
 
+    bool equal_iter(auto curr_iter, auto next_iter);
+    bool personid_exists(vector<pair<PersonID, PersonID>> v, pair<PersonID, PersonID> p);
+
+
 private:
     // Add your implementation here
+    Person* pmax_salary_;
+    Person* pmin_salary_;
+    Person* p_;
+
+    vector<Person*> vperson_;
+    vector<Person*> vperson_name_;
+    unordered_map<PersonID, Person*> m_;
+
+    bool sorted_name_;
+    bool sorted_salary_;
+    bool max_salary_removed_;
+    bool min_salary_removed_;
+
+    Graph* graph_;
 
 };
 
